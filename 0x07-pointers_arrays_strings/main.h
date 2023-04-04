@@ -2,8 +2,8 @@
 #define MAIN_H
 
 /**
- * File: holberton.h
- * Auth: Firdaus
+ * File: Main.h
+ * Auth: Gabby
  * Desc: Header file containing prototypes for all functions
  *       used in the 0x07-pointers_arrays_strings directory.
  */
