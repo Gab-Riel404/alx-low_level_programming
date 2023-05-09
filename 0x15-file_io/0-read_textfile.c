@@ -1,37 +1,45 @@
 #include "main.h"
+#include <stdlib.h>
 
 /**
- * read_textfile - reads a text file and prints the letters
- * @filename: filename.
- * @max_chars: maximum number of characters to read and print.
+ * read_textfile - Reads a text file and prints it to STDOUT.
+ * @filename: The name of the file to read.
+ * @letters: The maximum number of letters to read.
  *
- * Return: number of characters printed. If it fails, returns 0.
+ * Return: The actual number of bytes read and printed, or 0 if an error occurs.
  */
-ssize_t read_textfile(const char *filename, size_t max_chars)
+ssize_t read_textfile(const char *filename, size_t letters)
 {
-    int file_descriptor;
-    ssize_t n_read, n_written;
-    char *buffer;
+	int fd;
+	ssize_t nread, nwritten;
+	char *buffer;
 
-    if (!filename)
-        return (0);
+	if (filename == NULL)
+		return (0);
 
-    file_descriptor = open(filename, O_RDONLY);
+	fd = open(filename, O_RDONLY);
+	if (fd == -1)
+		return (0);
 
-    if (file_descriptor == -1)
-        return (0);
+	buffer = malloc(sizeof(char) * letters);
+	if (buffer == NULL) {
+		close(fd);
+		return (0);
+	}
 
-    buffer = malloc(sizeof(char) * max_chars);
-    if (!buffer)
-        return (0);
+	nread = read(fd, buffer, letters);
+	if (nread == -1) {
+		free(buffer);
+		close(fd);
+		return (0);
+	}
 
-    n_read = read(file_descriptor, buffer, max_chars);
-    n_written = write(STDOUT_FILENO, buffer, n_read);
+	nwritten = write(STDOUT_FILENO, buffer, nread);
+	free(buffer);
+	close(fd);
 
-    close(file_descriptor);
+	if (nwritten == -1)
+		return (0);
 
-    free(buffer);
-
-    return (n_written);
+	return (nwritten);
 }
-
